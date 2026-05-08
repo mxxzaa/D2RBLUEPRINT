@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D2R BLUEPRINT</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0d0f12;
+    --surface: #13161b;
+    --card: #1a1e25;
+    --border: #2a2f3a;
+    --border2: #333a48;
+    --accent: #7ee8a2;
+    --accent2: #5bc8f5;
+    --gold: #f0c060;
+    --red: #f07070;
+    --green: #7ee8a2;
+    --text: #d8dde8;
+    --text2: #9aa3b2;
+    --muted: #5a6275;
+    --checked-bg: rgba(126,232,162,0.07);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--black); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 40px 20px 100px; line-height: 1.6; }
+
+  /* ── NAV TABS ── */
+  .nav-tabs { max-width: 900px; margin: 0 auto 40px; display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; }
+  .nav-tab { flex: 1; padding: 10px 8px; text-align: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--muted); cursor: pointer; border-radius: 5px; transition: all 0.2s; text-transform: uppercase; border: none; background: none; }
+  .nav-tab.active { background: var(--card); color: var(--text); border: 1px solid var(--border2); }
+  .nav-tab:hover:not(.active) { color: var(--text2); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── HEADER ── */
+  .header { text-align: center; padding: 48px 0 40px; }
+  .header .eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; }
+  .header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 9vw, 96px); letter-spacing: 5px; line-height: 0.92; color: #fff; }
+  .header h1 span { color: var(--accent); }
+  .header .tagline { font-size: 13px; color: var(--text2); margin-top: 12px; }
+
+  /* ── RULES ── */
+  .rules-banner { max-width: 900px; margin: 0 auto 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  .rule-item { background: var(--card); padding: 18px 14px; text-align: center; }
+  .rule-item .r-val { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--accent); line-height: 1; }
+  .rule-item .r-lbl { font-size: 11px; color: var(--text2); margin-top: 3px; }
+
+  /* ── SECTION HEADING ── */
+  .sh { max-width: 900px; margin: 0 auto 14px; display: flex; align-items: center; gap: 12px; }
+  .sh span { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; white-space: nowrap; }
+  .sh::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── PROGRESS ── */
+  .progress-wrap { max-width: 900px; margin: 0 auto 36px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 16px 22px; }
+  .pb-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .pb-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .pb-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); }
+  .pb-track { height: 4px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .pb-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.3s; width: 0%; }
+
+  /* ── BIAS METER STICKY ── */
+  .bias-meter-sticky-wrap { position: sticky; top: 0; z-index: 100; max-width: 900px; margin: 0 auto 16px; background: var(--black); padding-top: 8px; padding-bottom: 4px; }
+  .bias-meter { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; }
+  .bias-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+  .bias-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+  .bias-verdict { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; line-height: 1; transition: color 0.3s; }
+  .bias-verdict.bull { color: var(--accent); }
+  .bias-verdict.bear { color: var(--red); }
+  .bias-verdict.neutral { color: var(--text2); }
+  .bias-scores { display: flex; gap: 16px; align-items: center; }
+  .bias-score-item { text-align: center; }
+  .bias-score-val { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; line-height: 1; }
+  .bias-score-val.bull { color: var(--accent); }
+  .bias-score-val.bear { color: var(--red); }
+  .bias-score-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: var(--muted); margin-top: 2px; }
+  .bias-bar-wrap { position: relative; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+  .bias-bar-bull { position: absolute; left: 50%; top: 0; height: 100%; background: var(--accent); border-radius: 0 5px 5px 0; transition: width 0.4s ease; width: 0%; }
+  .bias-bar-bear { position: absolute; right: 50%; top: 0; height: 100%; background: var(--red); border-radius: 5px 0 0 5px; transition: width 0.4s ease; width: 0%; }
+  .bias-bar-center { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: var(--border2); transform: translateX(-50%); z-index: 1; }
+  .bias-bar-labels { display: flex; justify-content: space-between; margin-top: 5px; }
+  .bias-side-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: var(--muted); }
+
+  /* Sub-group labels bolder */
+  .sub-group-label { font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 2px; color: #c0c8d8; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; margin-top: 6px; }
+
+  /* ── TWO-COLUMN BEAR|BULL LAYOUT ── */
+  .bb-layout { display: grid; grid-template-columns: 1fr 2px 1fr; gap: 0; }
+  .bb-col { padding: 10px 12px; }
+  .bb-col.bear-col { border-right: none; }
+  .bb-col.bull-col { border-left: none; }
+  .bb-divider { background: var(--border); align-self: stretch; }
+  .bb-col-header { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .bb-col-header.bear { color: rgba(240,112,112,0.7); }
+  .bb-col-header.bull { color: rgba(126,232,162,0.7); }
+  .bb-neutral-row { padding: 4px 12px; border-top: 1px solid var(--border); }
+
+  /* Compact items inside bb columns */
+  .bb-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 5px; cursor: pointer; transition: background 0.15s; margin-bottom: 3px; }
+  .bb-item:hover { background: rgba(255,255,255,0.035); }
+  .bb-item.checked { background: var(--checked-bg); }
+  .bb-item.checked.bias-bear { background: rgba(240,112,112,0.08); }
+  .bb-check { width: 15px; height: 15px; border: 1.5px solid var(--border2); border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; background: var(--surface); }
+  .bb-item.checked .bb-check { border-color: var(--accent); background: var(--accent); }
+  .bb-item.checked.bias-bear .bb-check { border-color: var(--red); background: var(--red); }
+  .bb-check svg { display: none; }
+  .bb-item.checked .bb-check svg { display: block; }
+  .bb-text { font-size: 12.5px; color: #b8bfcc; line-height: 1.4; flex: 1; }
+  .bb-item.checked .bb-text { color: #e8ecf4; }
+  .bb-badge { font-size: 9px; font-family: 'DM Mono', monospace; padding: 1px 5px; border-radius: 3px; letter-spacing: 0.5px; flex-shrink: 0; opacity: 0.5; }
+  .bb-badge.bull { background: rgba(126,232,162,0.1); color: var(--accent); }
+  .bb-badge.bear { background: rgba(240,112,112,0.1); color: var(--red); }
+  .bb-item.checked .bb-badge { opacity: 1; }
+
+  /* Compact radio inside bb columns */
+  .bb-text { font-size: 12.5px; color: #b8bfcc; flex: 1; line-height: 1.4; }
+  .bb-item.checked .bb-text { color: #e8ecf4; }
+  .bb-item.checked .bb-badge { opacity: 1; }
+
+  @media (max-width: 580px) { .bb-layout { grid-template-columns: 1fr; } .bb-divider { height: 1px; width: 100%; } }
+
+  /* ── CHECKLIST ── */
+  .checklist-wrap { max-width: 900px; margin: 0 auto 20px; }
+  .check-step { background: var(--card); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 7px; overflow: hidden; transition: border-color 0.2s; }
+  .check-step.all-done { border-color: rgba(126,232,162,0.32) !important; background: rgba(126,232,162,0.025) !important; }
+  .check-step.all-done.step-bear { border-color: rgba(240,112,112,0.32) !important; background: rgba(240,112,112,0.025) !important; }
+  .check-step.all-done.step-neutral { border-color: rgba(200,205,215,0.3) !important; background: rgba(200,205,215,0.02) !important; }
+  .step-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; user-select: none; }
+  .step-num { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--text2); width: 22px; flex-shrink: 0; }
+  .step-check { width: 20px; height: 20px; border: 2px solid var(--border2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; background: var(--surface); }
+  .step-check.done { border-color: var(--accent) !important; background: var(--accent) !important; }
+  .check-step.step-bear .step-check.done { border-color: var(--red) !important; background: var(--red) !important; }
+  .check-step.step-neutral .step-check.done { border-color: #c8cdd7 !important; background: #c8cdd7 !important; }
+  .step-check svg { display: none; }
+  .step-check.done svg { display: block; }
+  .step-title { font-size: 14px; font-weight: 600; color: #e8ecf4; flex: 1; letter-spacing: 0.2px; }
+  .step-toggle { font-size: 11px; color: var(--text2); transition: transform 0.2s; }
+  .step-toggle.open { transform: rotate(180deg); }
+  .step-body { padding: 0 18px 0 54px; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.3s; }
+  .step-body.open { max-height: 1400px; padding-bottom: 18px; }
+
+  .sub-group { margin-bottom: 14px; }
+
+  /* Bull / Bear section divider inside sub-groups */
+  .bias-divider { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .bias-divider-line { flex: 1; height: 1px; }
+  .bias-divider-line.bull { background: rgba(126,232,162,0.15); }
+  .bias-divider-line.bear { background: rgba(240,112,112,0.15); }
+  .bias-divider-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+  .bias-divider-label.bull { color: rgba(126,232,162,0.5); }
+  .bias-divider-label.bear { color: rgba(240,112,112,0.5); }
+
+  .sub-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 5px; cursor: pointer; transition: background 0.15s; margin-bottom: 3px; }
+  .sub-item:hover { background: rgba(255,255,255,0.035); }
+  .sub-item.checked { background: var(--checked-bg); }
+  .sub-item.checked.bias-bear { background: rgba(240,112,112,0.08); }
+  .sub-check { width: 16px; height: 16px; border: 1.5px solid var(--border2); border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; background: var(--surface); }
+  .sub-item.checked .sub-check { border-color: var(--accent); background: var(--accent); }
+  .sub-item.checked.bias-bear .sub-check { border-color: var(--red); background: var(--red); }
+  .sub-item:not([data-bias]).checked .sub-check { border-color: #c8cdd7 !important; background: #c8cdd7 !important; }
+  .sub-item[data-bias="none"].checked .sub-check { border-color: #c8cdd7 !important; background: #c8cdd7 !important; }
+  .step-neutral .sub-item.checked .sub-check { border-color: #c8cdd7 !important; background: #c8cdd7 !important; }
+  .sub-check svg { display: none; }
+  .sub-item.checked .sub-check svg { display: block; }
+  .sub-text { font-size: 13.5px; color: #b8bfcc; line-height: 1.4; flex: 1; }
+  .sub-item.checked .sub-text { color: #e8ecf4; }
+
+  .sub-tag { font-size: 10px; font-family: 'DM Mono', monospace; padding: 2px 7px; border-radius: 3px; margin-left: 5px; letter-spacing: 0.5px; flex-shrink: 0; }
+  .tag-bull { background: rgba(126,232,162,0.12); color: var(--green); }
+  .tag-bear { background: rgba(240,112,112,0.12); color: var(--red); }
+  .tag-neutral { background: rgba(91,200,245,0.1); color: var(--accent2); }
+  .tag-wait { background: rgba(240,192,96,0.12); color: var(--gold); }
+  .bias-badge { font-size: 10px; font-family: 'DM Mono', monospace; padding: 2px 7px; border-radius: 3px; letter-spacing: 0.5px; flex-shrink: 0; opacity: 0.5; }
+  .bias-badge.bull { background: rgba(126,232,162,0.1); color: var(--accent); }
+  .bias-badge.bear { background: rgba(240,112,112,0.1); color: var(--red); }
+  .sub-item.checked .bias-badge { opacity: 1; }
+  .radio-item.selected .bias-badge { opacity: 1; }
+
+  .step-note { font-size: 12.5px; color: #8a93a6; line-height: 1.6; padding: 10px 13px; border-left: 2px solid var(--border2); margin-top: 8px; font-style: italic; border-radius: 0 4px 4px 0; background: rgba(255,255,255,0.015); }
+  .step-note strong { color: #b8bfcc; font-style: normal; }
+
+  /* Inline controls inside step body */
+  .inline-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; flex-wrap: wrap; }
+  .inline-label { font-size: 13px; color: #b8bfcc; }
+  .chip-group { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip { font-family: 'DM Mono', monospace; font-size: 11px; padding: 4px 11px; border-radius: 4px; border: 1px solid var(--border2); color: #8a93a6; cursor: pointer; transition: all 0.15s; background: var(--surface); }
+  .chip:hover { border-color: #b8bfcc; color: #b8bfcc; }
+  .chip.selected { border-color: var(--accent); color: var(--accent); background: rgba(126,232,162,0.07); }
+  .chip.selected-bear { border-color: var(--red); color: var(--red); background: rgba(240,112,112,0.07); }
+
+  .inline-input { background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 4px 10px; outline: none; width: 130px; }
+  .inline-input:focus { border-color: var(--accent2); }
+  .inline-input::placeholder { color: var(--muted); }
+
+  .news-time-row { display: none; padding: 4px 10px 6px; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .news-time-row.visible { display: flex; }
+
+  /* Radio-style single select */
+  .radio-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 5px; cursor: pointer; transition: background 0.15s; margin-bottom: 3px; }
+  .radio-item:hover { background: rgba(255,255,255,0.035); }
+  .radio-item.selected { background: var(--checked-bg); }
+  .radio-item.selected.bias-bear { background: rgba(240,112,112,0.08); }
+  .radio-dot { width: 16px; height: 16px; border: 1.5px solid var(--border2); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; background: var(--surface); }
+  .radio-item.selected .radio-dot { border-color: var(--accent2); background: var(--accent2); }
+  .radio-item.selected.bias-bear .radio-dot { border-color: var(--red); background: var(--red); }
+  .radio-item.selected .radio-dot::after { content: ''; width: 6px; height: 6px; background: var(--black); border-radius: 50%; }
+  .radio-dot::after { display: none; }
+  .radio-item.selected .radio-dot::after { display: block; }
+  .radio-text { font-size: 13.5px; color: #b8bfcc; flex: 1; line-height: 1.4; }
+  .radio-item.selected .radio-text { color: #e8ecf4; }
+
+  /* TF select dropdown */
+  .tf-select { background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; color: #b8bfcc; font-family: 'DM Mono', monospace; font-size: 11px; padding: 3px 8px; outline: none; cursor: pointer; }
+  .tf-select:focus { border-color: var(--accent2); }
+
+  .divider-line { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* Two-column bull/bear pairs */
+  .pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 4px; }
+  @media (max-width: 580px) { .pair-grid { grid-template-columns: 1fr; } }
+
+  /* ── RESET ── */
+  .reset-wrap { max-width: 900px; margin: 12px auto 0; text-align: right; }
+  .reset-btn { background: none; border: 1px solid var(--border2); border-radius: 4px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; padding: 6px 14px; cursor: pointer; transition: all 0.15s; }
+  .reset-btn:hover { color: var(--text2); border-color: var(--text2); }
+
+  /* ── ACCOUNTS ── */
+  .accounts-grid { max-width: 900px; margin: 0 auto 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .acc-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; display: flex; align-items: center; gap: 12px; }
+  .acc-card.leader { grid-column: 1 / -1; border-left: 3px solid var(--accent); }
+  .acc-card.follower { border-left: 3px solid var(--accent2); }
+  .acc-amt { font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; }
+  .acc-card.leader .acc-amt { color: var(--accent); }
+  .acc-card.follower .acc-amt { color: var(--accent2); }
+  .acc-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .acc-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ── PHASES ── */
+  .phases-wrap { max-width: 900px; margin: 0 auto; }
+  .phase-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; }
+  .phase-card.has-w { border-color: rgba(240,192,96,0.2); }
+  .phase-row { display: flex; align-items: center; gap: 12px; padding: 14px 18px; }
+  .ph-num { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); width: 70px; flex-shrink: 0; }
+  .ph-range { display: flex; align-items: center; gap: 7px; flex: 1; }
+  .ph-from { font-size: 13px; color: var(--text2); font-family: 'DM Mono', monospace; }
+  .ph-arrow { color: var(--border2); font-size: 11px; }
+  .ph-to { font-size: 13px; color: var(--green); font-family: 'DM Mono', monospace; font-weight: 500; }
+  .ph-risk { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--red); background: rgba(240,112,112,0.08); border: 1px solid rgba(240,112,112,0.18); border-radius: 4px; padding: 3px 9px; flex-shrink: 0; }
+  .w-section { padding: 14px 18px; border-top: 1px solid rgba(240,192,96,0.14); background: rgba(240,192,96,0.02); }
+  .w-lbl { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .w-accounts { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+  .w-pill { background: rgba(240,192,96,0.07); border: 1px solid rgba(240,192,96,0.14); border-radius: 4px; padding: 5px 11px; }
+  .w-pill .wp-from { font-size: 9px; color: var(--muted); }
+  .w-pill .wp-amt { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--gold); letter-spacing: 1px; }
+  .w-totals { display: flex; align-items: center; gap: 16px; padding-top: 10px; border-top: 1px solid rgba(240,192,96,0.1); flex-wrap: wrap; }
+  .wt-item { display: flex; flex-direction: column; gap: 2px; }
+  .wt-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .wt-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; line-height: 1; }
+  .wt-val.gross { color: var(--text2); }
+  .wt-val.net { color: var(--gold); }
+  .wt-val.tracker { color: var(--accent); }
+  .wt-sep { color: var(--border2); font-size: 14px; }
+
+  .final-target { max-width: 900px; margin: 32px auto 0; border: 1px solid rgba(126,232,162,0.22); border-radius: 8px; background: rgba(126,232,162,0.04); padding: 40px 28px; text-align: center; }
+  .ft-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+  .ft-amount { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 10vw, 88px); letter-spacing: 4px; color: var(--accent); line-height: 1; }
+  .ft-sub { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+  /* ═══════════════════════════════════════
+     CALENDAR TAB
+  ═══════════════════════════════════════ */
+  .cal-header { max-width: 900px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .cal-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 3px; color: var(--text); }
+  .cal-nav { display: flex; align-items: center; gap: 8px; }
+  .cal-nav button { background: var(--card); border: 1px solid var(--border); border-radius: 5px; color: var(--text2); font-size: 14px; width: 34px; height: 34px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+  .cal-nav button:hover { border-color: var(--accent2); color: var(--accent2); }
+  .cal-year-select { background: var(--card); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 6px 10px; outline: none; cursor: pointer; }
+
+  .cal-stats-summary { max-width: 900px; margin: 0 auto 24px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+  .cal-stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px 12px; text-align: center; }
+  .cal-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; line-height: 1; }
+  .cal-stat-val.pos { color: var(--accent); }
+  .cal-stat-val.neg { color: var(--red); }
+  .cal-stat-val.neutral { color: var(--accent2); }
+  .cal-stat-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+
+  .months-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+  .month-block { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .month-name { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--text2); padding: 10px 14px 8px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .month-pnl { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; }
+  .month-pnl.pos { color: var(--accent); }
+  .month-pnl.neg { color: var(--red); }
+  .month-pnl.zero { color: var(--muted); }
+
+  .day-headers { display: grid; grid-template-columns: repeat(7, 1fr); padding: 4px 8px 0; }
+  .day-hdr { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1px; color: var(--muted); text-align: center; padding: 3px 0; }
+
+  .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); padding: 2px 8px 8px; gap: 2px; }
+  .day-cell { aspect-ratio: 1; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; position: relative; font-size: 10px; color: var(--text2); border: 1px solid transparent; }
+  .day-cell:hover { background: rgba(255,255,255,0.05); border-color: var(--border2); }
+  .day-cell.empty { cursor: default; }
+  .day-cell.empty:hover { background: none; border-color: transparent; }
+  .day-cell.weekend { color: var(--muted); }
+  .day-cell.has-data { border-color: var(--border); }
+  .day-cell.win { background: rgba(126,232,162,0.1); border-color: rgba(126,232,162,0.25); color: var(--accent); }
+  .day-cell.win:hover { background: rgba(126,232,162,0.18); }
+  .day-cell.loss { background: rgba(240,112,112,0.1); border-color: rgba(240,112,112,0.25); color: var(--red); }
+  .day-cell.loss:hover { background: rgba(240,112,112,0.18); }
+  .day-cell.be { background: rgba(91,200,245,0.08); border-color: rgba(91,200,245,0.2); color: var(--accent2); }
+  .day-cell.today-marker { outline: 1px solid var(--accent2); outline-offset: -1px; }
+
+  .day-num { font-size: 9px; line-height: 1; }
+  .day-dot { width: 3px; height: 3px; border-radius: 50%; background: currentColor; margin-top: 2px; opacity: 0.7; }
+
+  /* ── DAY MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border2); border-radius: 10px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+  .modal-header { padding: 18px 22px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .modal-date { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--text); }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 2px 6px; border-radius: 3px; }
+  .modal-close:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+  .modal-body { padding: 18px 22px 22px; }
+
+  .field-group { margin-bottom: 16px; }
+  .field-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 7px; display: block; }
+  .field-input { width: 100%; background: var(--surface); border: 1px solid var(--border2); border-radius: 5px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 8px 12px; outline: none; transition: border-color 0.15s; }
+  .field-input:focus { border-color: var(--accent2); }
+  .field-input::placeholder { color: var(--muted); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .result-chips { display: flex; gap: 6px; }
+  .result-chip { flex: 1; padding: 8px 6px; text-align: center; border-radius: 5px; border: 1px solid var(--border2); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; cursor: pointer; transition: all 0.15s; color: var(--muted); background: var(--surface); }
+  .result-chip:hover { border-color: var(--text2); color: var(--text2); }
+  .result-chip.win.selected { border-color: var(--accent); color: var(--accent); background: rgba(126,232,162,0.1); }
+  .result-chip.loss.selected { border-color: var(--red); color: var(--red); background: rgba(240,112,112,0.1); }
+  .result-chip.be.selected { border-color: var(--accent2); color: var(--accent2); background: rgba(91,200,245,0.08); }
+  .result-chip.skip.selected { border-color: var(--gold); color: var(--gold); background: rgba(240,192,96,0.08); }
+
+  .modal-actions { display: flex; gap: 8px; margin-top: 20px; }
+  .btn-save { flex: 1; padding: 10px; background: var(--accent); color: var(--black); border: none; border-radius: 5px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 2px; cursor: pointer; font-weight: 600; transition: opacity 0.15s; }
+  .btn-save:hover { opacity: 0.85; }
+  .btn-clear { padding: 10px 16px; background: none; border: 1px solid var(--border2); color: var(--muted); border-radius: 5px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; cursor: pointer; transition: all 0.15s; }
+  .btn-clear:hover { color: var(--red); border-color: var(--red); }
+
+  .notes-ta { resize: vertical; min-height: 70px; font-family: 'DM Sans', sans-serif; }
+
+  @media (max-width: 700px) {
+    .months-grid { grid-template-columns: 1fr 1fr; }
+    .cal-stats-summary { grid-template-columns: repeat(3, 1fr); }
+    .accounts-grid { grid-template-columns: 1fr; }
+    .acc-card.leader { grid-column: auto; }
+    .rules-banner { grid-template-columns: 1fr; gap: 2px; }
+    .nav-tab { font-size: 9px; padding: 8px 4px; }
+  }
+  @media (max-width: 480px) {
+    .months-grid { grid-template-columns: 1fr; }
+    .cal-stats-summary { grid-template-columns: repeat(2, 1fr); }
+    .step-body { padding-left: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div style="max-width:900px;margin:0 auto 0;padding-top:32px;">
+  <div style="text-align:center;margin-bottom:28px;">
+    <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;">Dreams 2 Reality</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,88px);letter-spacing:5px;line-height:0.92;color:#fff;">D2R <span style="color:var(--accent)">BLUEPRINT</span></div>
+    <div style="font-size:13px;color:var(--text2);margin-top:10px;">Pre-Trade Checklist · Trading Journal</div>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('checklist')">📋 Pre-Trade</button>
+  <button class="nav-tab" onclick="switchTab('calendar')">📅 Journal</button>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB: CHECKLIST
+══════════════════════════════════ -->
+<div id="tab-checklist" class="tab-panel active">
+
+  <div class="rules-banner">
+    <div class="rule-item"><div class="r-val">2</div><div class="r-lbl">Max Trades / Day</div></div>
+    <div class="rule-item"><div class="r-val">1W</div><div class="r-lbl">1 Win = Done</div></div>
+    <div class="rule-item"><div class="r-val">2L</div><div class="r-lbl">2 Losses = Done</div></div>
+  </div>
+
+  <div class="sh"><span>Pre-Trade Checklist</span></div>
+
+  <div class="progress-wrap">
+    <div class="pb-row">
+      <span class="pb-label">Checklist Progress</span>
+      <span class="pb-count" id="pb-count">0 / 6 Steps</span>
+    </div>
+    <div class="pb-track"><div class="pb-fill" id="pb-fill"></div></div>
+  </div>
+
+  <!-- BIAS METER - STICKY -->
+  <div class="bias-meter-sticky-wrap">
+  <div class="bias-meter">
+    <div class="bias-top">
+      <div>
+        <div class="bias-label">Market Bias</div>
+        <div class="bias-verdict neutral" id="bias-verdict">NEUTRAL</div>
+      </div>
+      <div class="bias-scores">
+        <div class="bias-score-item">
+          <div class="bias-score-val bull" id="bias-bull-pct">0%</div>
+          <div class="bias-score-lbl">BULLISH</div>
+        </div>
+        <div style="color:var(--border2);font-size:18px;padding-top:2px;">vs</div>
+        <div class="bias-score-item">
+          <div class="bias-score-val bear" id="bias-bear-pct">0%</div>
+          <div class="bias-score-lbl">BEARISH</div>
+        </div>
+      </div>
+    </div>
+    <div class="bias-bar-wrap">
+      <div class="bias-bar-center"></div>
+      <div class="bias-bar-bull" id="bias-bar-bull"></div>
+      <div class="bias-bar-bear" id="bias-bar-bear"></div>
+    </div>
+    <div class="bias-bar-labels">
+      <span class="bias-side-lbl" style="color:rgba(240,112,112,0.7);">◀ BEARISH</span>
+      <span class="bias-side-lbl">NEUTRAL</span>
+      <span class="bias-side-lbl" style="color:rgba(126,232,162,0.7);">BULLISH ▶</span>
+    </div>
+  </div>
+  </div>
+
+  <div class="checklist-wrap">
+
+    <!-- STEP 1 -->
+    <div class="check-step" id="step-1">
+      <div class="step-header" onclick="toggleStep(1)">
+        <span class="step-num">01</span>
+        <div class="step-check" id="sc-1"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.5 6L9 1" stroke="#0d0f12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="step-title">Fundamentals / Macro Bias & News</span>
+        <span class="step-toggle" id="st-1">▼</span>
+      </div>
+      <div class="step-body" id="sb-1">
+        <div class="sub-group-label" style="padding:0 12px;">Identify Environment</div>
+        <div class="bb-layout">
+          <div class="bb-col bear-col">
+            <div class="bb-col-header bear">◀ Bearish</div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,1)" data-bias="bear" data-weight="15">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Inflationary → rates higher <span class="sub-tag tag-bear">BEAR</span></span>
+              <span class="bb-badge bear">−15</span>
+            </div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="bb-col bull-col">
+            <div class="bb-col-header bull">Bullish ▶</div>
+            <div class="bb-item" onclick="toggleSub(this,1)" data-bias="bull" data-weight="15">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Deflationary → rates lower <span class="sub-tag tag-bull">BULL</span></span>
+              <span class="bb-badge bull">+15</span>
+            </div>
+          </div>
+        </div>
+        <div class="bb-neutral-row">
+          <div class="sub-group-label" style="padding:6px 0 4px;">Red Folder News</div>
+          <div class="inline-row" style="padding:2px 0 4px;">
+            <span class="inline-label">News today?</span>
+            <div class="chip-group">
+              <div class="chip" onclick="toggleNewsChip(this,'yes')">YES</div>
+              <div class="chip" onclick="toggleNewsChip(this,'no')">NO</div>
+            </div>
+          </div>
+          <div class="news-time-row" id="news-time-row">
+            <span class="inline-label" style="font-size:12px;color:var(--text2);">When?</span>
+            <div class="chip-group">
+              <div class="chip" onclick="selectTimeChip(this,'8:30')">8:30</div>
+              <div class="chip" onclick="selectTimeChip(this,'10:00')">10:00</div>
+              <div class="chip" onclick="selectTimeChip(this,'other')">OTHER</div>
+            </div>
+            <input type="text" class="inline-input" id="news-custom-time" placeholder="custom time…" style="display:none;width:110px;" />
+          </div>
+          <div id="news-10am-block" style="display:none;margin:6px 0 2px;">
+            <div style="background:rgba(240,192,96,0.08);border:1px solid rgba(240,192,96,0.25);border-radius:5px;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+              <span style="font-size:16px;">⏸</span>
+              <div>
+                <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:2px;">10:00 News — Wait</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.5;">Do not enter before 10:00. Let news print, then re-evaluate steps 3–5.</div>
+              </div>
+            </div>
+          </div>
+          <div id="news-830-block" style="display:none;margin:8px 0 2px;">
+            <div class="sub-group-label" style="padding:0 0 6px;">8:30 Reaction</div>
+            <div class="bb-layout">
+              <div class="bb-col bear-col">
+                <div class="bb-item bias-bear" onclick="toggleSub(this,1)" data-bias="bear" data-weight="5">
+                  <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <span class="bb-text">Push bull & <strong style="color:var(--red)">reverse</strong> <span class="sub-tag tag-bear">BEAR TRAP</span></span>
+                  <span class="bb-badge bear">−5</span>
+                </div>
+                <div class="bb-item bias-bear" onclick="toggleSub(this,1)" data-bias="bear" data-weight="5">
+                  <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <span class="bb-text">Push bear & <strong style="color:var(--red)">hold</strong> <span class="sub-tag tag-bear">CONFIRMS BEAR</span></span>
+                  <span class="bb-badge bear">−5</span>
+                </div>
+              </div>
+              <div class="bb-divider"></div>
+              <div class="bb-col bull-col">
+                <div class="bb-item" onclick="toggleSub(this,1)" data-bias="bull" data-weight="5">
+                  <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <span class="bb-text">Push bull & <strong style="color:var(--accent)">hold</strong> <span class="sub-tag tag-bull">CONFIRMS BULL</span></span>
+                  <span class="bb-badge bull">+5</span>
+                </div>
+                <div class="bb-item" onclick="toggleSub(this,1)" data-bias="bull" data-weight="5">
+                  <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <span class="bb-text">Push bear & <strong style="color:var(--accent)">reverse</strong> <span class="sub-tag tag-bull">BULL TRAP</span></span>
+                  <span class="bb-badge bull">+5</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-item" onclick="toggleSub(this,1)" style="margin-top:8px;">
+            <div class="sub-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="sub-text">Fundamental Regime identified — News timing noted</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="check-step step-neutral" id="step-2">
+      <div class="step-header" onclick="toggleStep(2)">
+        <span class="step-num">02</span>
+        <div class="step-check" id="sc-2"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.5 6L9 1" stroke="#0d0f12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="step-title">Plot HTF Liquidity Levels &amp; PD Arrays</span>
+        <span class="step-toggle" id="st-2">▼</span>
+      </div>
+      <div class="step-body" id="sb-2">
+        <div class="sub-group" style="padding:0 4px;">
+          <div class="sub-item" onclick="toggleSub(this,2)">
+            <div class="sub-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="sub-text">Important <strong style="color:#c8cdd7;">4H Open prices</strong> marked</span>
+          </div>
+          <div class="sub-item" onclick="toggleSub(this,2)">
+            <div class="sub-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="sub-text">Important 1H &amp; 4H <strong style="color:#c8cdd7;">Internal &amp; External Liquidity Levels</strong> <span style="color:var(--accent2);">(Marked as Targets)</span></span>
+          </div>
+          <div class="sub-item" onclick="toggleSub(this,2)">
+            <div class="sub-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="sub-text">Important 1H &amp; 4H <strong style="color:#c8cdd7;">PD Arrays</strong> marked <span class="sub-tag tag-neutral">OBs</span> <span class="sub-tag tag-neutral">FVGs</span> <span class="sub-tag tag-neutral">Breakers</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="check-step" id="step-3">
+      <div class="step-header" onclick="toggleStep(3)">
+        <span class="step-num">03</span>
+        <div class="step-check" id="sc-3"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.5 6L9 1" stroke="#0d0f12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="step-title">Observe 9:30–9:45 Opening Range Behavior</span>
+        <span class="step-toggle" id="st-3">▼</span>
+      </div>
+      <div class="step-body" id="sb-3">
+        <div class="sub-group-label" style="padding:0 12px 4px;">What did price do?</div>
+        <div class="bb-layout">
+          <div class="bb-col bear-col">
+            <div class="bb-col-header bear">◀ Bearish</div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,3)" data-bias="bear" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Sweep higher → push lower</span><span class="bb-badge bear">−8</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,3)" data-bias="bear" data-weight="6">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Pushing lower with strength</span><span class="bb-badge bear">−6</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,3)" data-bias="bear" data-weight="3">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Weak push lower / Possible reversal <span class="sub-tag tag-bull" style="font-size:9px;">slightly bull</span></span><span class="bb-badge bear">−3</span>
+            </div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="bb-col bull-col">
+            <div class="bb-col-header bull">Bullish ▶</div>
+            <div class="bb-item" onclick="toggleSub(this,3)" data-bias="bull" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Sweep lower → push higher</span><span class="bb-badge bull">+8</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,3)" data-bias="bull" data-weight="6">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Pushing higher with strength</span><span class="bb-badge bull">+6</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,3)" data-bias="bull" data-weight="3">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Weak push higher / Possible reversal <span class="sub-tag tag-bear" style="font-size:9px;">slightly bear</span></span><span class="bb-badge bull">+3</span>
+            </div>
+          </div>
+        </div>
+        <div class="bb-neutral-row" style="padding-top:8px;">
+          <div class="sub-item" onclick="toggleSub(this,3)">
+            <div class="sub-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="sub-text">9:30–9:45 opening range behavior observed &amp; noted</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="check-step" id="step-4">
+      <div class="step-header" onclick="toggleStep(4)">
+        <span class="step-num">04</span>
+        <div class="step-check" id="sc-4"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.5 6L9 1" stroke="#0d0f12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="step-title">Confluences from 9:30–9:45 Opening Range</span>
+        <span class="step-toggle" id="st-4">▼</span>
+      </div>
+      <div class="step-body" id="sb-4">
+
+        <!-- REQUIRED CONFLUENCES -->
+        <div class="sub-group-label" style="padding:0 12px 4px;">Required Confluences <span style="color:var(--gold);font-size:9px;letter-spacing:1px;font-weight:400;">★ ALL NEEDED FOR ENTRY</span></div>
+        <div class="bb-layout">
+          <div class="bb-col bear-col">
+            <div class="bb-col-header bear">◀ Bearish</div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,4)" data-bias="bear" data-weight="20">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">HTF SMT on <strong style="color:var(--red)">HIGHS</strong>
+                <select class="tf-select" onclick="event.stopPropagation()" style="margin-left:4px;">
+                  <option value="">TF</option><option>1m</option><option>2m</option><option>3m</option><option>5m</option><option>15m</option><option>30m</option><option>1H</option><option>4H</option>
+                </select>
+              </span>
+              <span class="bb-badge bear">−20</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,4)" data-bias="bear" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Aligns with bearish fundamentals</span><span class="bb-badge bear">−8</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,4)" data-bias="bear" data-weight="7">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Break of opposing <strong style="color:var(--red)">SL</strong></span><span class="bb-badge bear">−7</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,4)" data-bias="bear" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">FVG + Displacement</span><span class="bb-badge bear">−8</span>
+            </div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="bb-col bull-col">
+            <div class="bb-col-header bull">Bullish ▶</div>
+            <div class="bb-item" onclick="toggleSub(this,4)" data-bias="bull" data-weight="20">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">HTF SMT on <strong style="color:var(--accent)">LOWS</strong>
+                <select class="tf-select" onclick="event.stopPropagation()" style="margin-left:4px;">
+                  <option value="">TF</option><option>1m</option><option>2m</option><option>3m</option><option>5m</option><option>15m</option><option>30m</option><option>1H</option><option>4H</option>
+                </select>
+              </span>
+              <span class="bb-badge bull">+20</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,4)" data-bias="bull" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Aligns with bullish fundamentals</span><span class="bb-badge bull">+8</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,4)" data-bias="bull" data-weight="7">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Break of opposing <strong style="color:var(--accent)">SH</strong></span><span class="bb-badge bull">+7</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,4)" data-bias="bull" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">FVG + Displacement</span><span class="bb-badge bull">+8</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADDITIONAL CONFLUENCES -->
+        <div class="sub-group-label" style="padding:8px 12px 4px;">Additional Confluences <span style="color:var(--text2);font-size:9px;letter-spacing:1px;font-weight:400;">optional — adds weight</span></div>
+        <div class="bb-layout">
+          <div class="bb-col bear-col">
+            <div class="bb-item bias-bear" onclick="toggleSub(this,4)" data-bias="bear" data-weight="10">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Buyside Liquidity Swept</span><span class="bb-badge bear">−10</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,4)" data-bias="bear" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Bullish Opposing FVG Inversed</span><span class="bb-badge bear">−8</span>
+            </div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="bb-col bull-col">
+            <div class="bb-item" onclick="toggleSub(this,4)" data-bias="bull" data-weight="10">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Sellside Liquidity Swept</span><span class="bb-badge bull">+10</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,4)" data-bias="bull" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Bearish Opposing FVG Inversed</span><span class="bb-badge bull">+8</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONFIRMATION -->
+        <div class="bb-neutral-row" style="padding-top:10px;padding-bottom:10px;">
+          <div class="sub-group-label" style="padding:0 0 8px;">All Required Confluences Confirmed?</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <div class="chip" style="padding:4px 14px;font-size:11px;" id="s4-yes-buy" onclick="event.stopPropagation();toggleConfirm4(this,'yes-buy')">YES → BUY SETUP</div>
+            <div class="chip" style="padding:4px 14px;font-size:11px;" id="s4-yes-sell" onclick="event.stopPropagation();toggleConfirm4(this,'yes-sell')">YES → SELL SETUP</div>
+            <div class="chip" style="padding:4px 14px;font-size:11px;" id="s4-no" onclick="event.stopPropagation();toggleConfirm4(this,'no')">NO → WAIT 9:45 MACRO</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="check-step" id="step-5">
+      <div class="step-header" onclick="toggleStep(5)">
+        <span class="step-num">05</span>
+        <div class="step-check" id="sc-5"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.5 6L9 1" stroke="#0d0f12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="step-title">9:45–10:15 Macro Analysis</span>
+        <span class="step-toggle" id="st-5">▼</span>
+      </div>
+      <div class="step-body" id="sb-5">
+
+        <!-- INITIAL MOVE -->
+        <div class="sub-group-label" style="padding:0 12px 4px;">Initial Move Behavior</div>
+        <div class="bb-layout">
+          <div class="bb-col bear-col">
+            <div class="bb-col-header bear">◀ Bearish</div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="10">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Sweep higher → push lower</span><span class="bb-badge bear">−10</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="7">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Pushing lower with strength</span><span class="bb-badge bear">−7</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="3">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Weak push lower / Possible reversal <span class="sub-tag tag-bull" style="font-size:9px;">slightly bull</span></span><span class="bb-badge bear">−3</span>
+            </div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="bb-col bull-col">
+            <div class="bb-col-header bull">Bullish ▶</div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="10">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Sweep lower → push higher</span><span class="bb-badge bull">+10</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="7">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Pushing higher with strength</span><span class="bb-badge bull">+7</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="3">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Higher weakly / taking liq. <span class="sub-tag tag-neutral" style="font-size:9px;">reversal?</span></span><span class="bb-badge bull">+3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- REQUIRED CONFLUENCES -->
+        <div class="sub-group-label" style="padding:8px 12px 4px;">Required Confluences <span style="color:var(--gold);font-size:9px;letter-spacing:1px;font-weight:400;">★ ALL NEEDED FOR ENTRY</span></div>
+        <div class="bb-layout">
+          <div class="bb-col bear-col">
+            <div class="bb-col-header bear">◀ Bearish</div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="6">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Buyside Liquidity Swept after 9:45</span><span class="bb-badge bear">−6</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">No sweep after 9:45</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Bearish SMT after 9:45
+                <select class="tf-select" onclick="event.stopPropagation()" style="margin-left:4px;">
+                  <option value="">TF</option><option>1m</option><option>2m</option><option>3m</option><option>5m</option><option>15m</option><option>30m</option><option>1H</option><option>4H</option>
+                </select>
+              </span><span class="bb-badge bear">−8</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">FVG + Displacement</span><span class="bb-badge bear">−8</span>
+            </div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="bb-col bull-col">
+            <div class="bb-col-header bull">Bullish ▶</div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="6">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Sellside Liquidity Swept after 9:45</span><span class="bb-badge bull">+6</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">No sweep after 9:45</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Bullish SMT after 9:45
+                <select class="tf-select" onclick="event.stopPropagation()" style="margin-left:4px;">
+                  <option value="">TF</option><option>1m</option><option>2m</option><option>3m</option><option>5m</option><option>15m</option><option>30m</option><option>1H</option><option>4H</option>
+                </select>
+              </span><span class="bb-badge bull">+8</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">FVG + Displacement</span><span class="bb-badge bull">+8</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONFIRMATION -->
+        <div class="bb-neutral-row" style="padding-top:10px;padding-bottom:10px;">
+          <div class="sub-group-label" style="padding:0 0 8px;">All Required Confluences Confirmed?</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <div class="chip" style="padding:4px 14px;font-size:11px;" id="s5-yes-buy" onclick="event.stopPropagation();toggleConfirm5(this,'yes-buy')">YES → BUY SETUP</div>
+            <div class="chip" style="padding:4px 14px;font-size:11px;" id="s5-yes-sell" onclick="event.stopPropagation();toggleConfirm5(this,'yes-sell')">YES → SELL SETUP</div>
+            <div class="chip" style="padding:4px 14px;font-size:11px;" id="s5-no" onclick="event.stopPropagation();toggleConfirm5(this,'no')">NO → WAIT 9:45 MACRO</div>
+          </div>
+        </div>
+
+        <!-- ADDITIONAL CONFLUENCES -->
+        <div class="sub-group-label" style="padding:8px 12px 4px;">Additional Confluences <span style="color:var(--text2);font-size:9px;letter-spacing:1px;font-weight:400;">optional — adds weight</span></div>
+        <div class="bb-layout">
+          <div class="bb-col bear-col">
+            <div class="bb-col-header bear">◀ Bearish</div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Bullish Opposing FVG Inversed</span><span class="bb-badge bear">−8</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="7">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">SOS Model</span><span class="bb-badge bear">−7</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,5)" data-bias="bear" data-weight="6">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Market Structure</span><span class="bb-badge bear">−6</span>
+            </div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="bb-col bull-col">
+            <div class="bb-col-header bull">Bullish ▶</div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="8">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Bearish Opposing FVG Inversed</span><span class="bb-badge bull">+8</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="7">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">SOS Model</span><span class="bb-badge bull">+7</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,5)" data-bias="bull" data-weight="6">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Market Structure</span><span class="bb-badge bull">+6</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="check-step" id="step-6">
+      <div class="step-header" onclick="toggleStep(6)">
+        <span class="step-num">06</span>
+        <div class="step-check" id="sc-6"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 3.5L3.5 6L9 1" stroke="#0d0f12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="step-title">Draw Fib &amp; Execute</span>
+        <span class="step-toggle" id="st-6">▼</span>
+      </div>
+      <div class="step-body" id="sb-6">
+        <div class="sub-group-label" style="padding:0 12px 4px;">Fibonacci Setup</div>
+        <div class="bb-layout">
+          <div class="bb-col bear-col">
+            <div class="bb-col-header bear">◀ Sell Setup</div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,6)" data-bias="bear" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Fib from first open → most recent close</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,6)" data-bias="bear" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Entry 0.5 / 0.618 / 0.764 — short</span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,6)" data-bias="bear" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">SL above swing high</span>
+            </div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="bb-col bull-col">
+            <div class="bb-col-header bull">Buy Setup ▶</div>
+            <div class="bb-item" onclick="toggleSub(this,6)" data-bias="bull" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Fib from first open → most recent close</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,6)" data-bias="bull" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Entry 0.5 / 0.618 / 0.764 — long</span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,6)" data-bias="bull" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">SL below swing low</span>
+            </div>
+          </div>
+        </div>
+        <div class="sub-group-label" style="padding:8px 12px 4px;">Take Profit Target</div>
+        <div class="bb-layout">
+          <div class="bb-col bear-col">
+            <div class="bb-col-header bear">◀ Short TP</div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,6)" data-bias="bear" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Fundamentals + Technical + Liquidity <span class="sub-tag tag-bear">−2 SDV</span></span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,6)" data-bias="bear" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Only 2 out of 3 <span class="sub-tag tag-neutral">−1.5 SDV</span></span>
+            </div>
+            <div class="bb-item bias-bear" onclick="toggleSub(this,6)" data-bias="bear" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Only 1 out of 3 <span class="sub-tag tag-wait">−1 SDV</span></span>
+            </div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="bb-col bull-col">
+            <div class="bb-col-header bull">Long TP ▶</div>
+            <div class="bb-item" onclick="toggleSub(this,6)" data-bias="bull" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Fundamentals + Technical + Liquidity <span class="sub-tag tag-bull">−2 SDV</span></span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,6)" data-bias="bull" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Only 2 out of 3 <span class="sub-tag tag-neutral">−1.5 SDV</span></span>
+            </div>
+            <div class="bb-item" onclick="toggleSub(this,6)" data-bias="bull" data-weight="0">
+              <div class="bb-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="bb-text">Only 1 out of 3 <span class="sub-tag tag-wait">−1 SDV</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="bb-neutral-row" style="padding-top:8px;padding-bottom:8px;">
+          <div class="sub-group-label" style="padding:0 0 6px;">Final Go / No Go</div>
+          <div class="sub-item" onclick="toggleSub(this,6)">
+            <div class="sub-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="sub-text">Risk within current phase parameters confirmed</span>
+          </div>
+          <div class="sub-item" onclick="toggleSub(this,6)">
+            <div class="sub-check"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#0d0f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="sub-text">All confluences confirmed — <strong style="color:var(--accent)">execute and walk away</strong></span>
+          </div>
+        </div>
+        <div class="step-note" style="margin:0 12px 8px;"><strong>Discipline:</strong> Once all steps complete — execute. No overrides. No revenge trades.</div>
+      </div>
+    </div>
+
+  </div><!-- /checklist-wrap -->
+
+  <div class="reset-wrap">
+    <button class="reset-btn" onclick="resetChecklist()">↺ Reset Checklist</button>
+  </div>
+
+</div><!-- /tab-checklist -->
+
+
+<!-- ══════════════════════════════════
+     TAB: CALENDAR / JOURNAL
+══════════════════════════════════ -->
+<div id="tab-calendar" class="tab-panel">
+
+  <div class="cal-header">
+    <div class="cal-title" id="cal-year-label">2025</div>
+    <div class="cal-nav">
+      <button onclick="changeYear(-1)">&#8249;</button>
+      <select class="cal-year-select" id="cal-year-sel" onchange="setYear(this.value)"></select>
+      <button onclick="changeYear(1)">&#8250;</button>
+    </div>
+  </div>
+
+  <div class="cal-stats-summary" id="cal-summary">
+    <div class="cal-stat-card"><div class="cal-stat-val neutral" id="s-days">0</div><div class="cal-stat-lbl">Trading Days</div></div>
+    <div class="cal-stat-card"><div class="cal-stat-val pos" id="s-wins">0</div><div class="cal-stat-lbl">Wins</div></div>
+    <div class="cal-stat-card"><div class="cal-stat-val neg" id="s-losses">0</div><div class="cal-stat-lbl">Losses</div></div>
+    <div class="cal-stat-card"><div class="cal-stat-val neutral" id="s-pnl">$0</div><div class="cal-stat-lbl">Net P&L</div></div>
+    <div class="cal-stat-card"><div class="cal-stat-val neutral" id="s-wr">0%</div><div class="cal-stat-lbl">Win Rate</div></div>
+  </div>
+
+  <div class="months-grid" id="months-grid"></div>
+
+</div><!-- /tab-calendar -->
+
+
+<!-- ══════════════════════════════════
+     TAB: ROADMAP
+══════════════════════════════════ -->
+
+
+
+<!-- ══════════════════════════════════
+     DAY MODAL
+══════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-date" id="modal-date-label">Jan 1, 2025</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label">Result</label>
+        <div class="result-chips">
+          <div class="result-chip win" onclick="selectResult('win')">WIN</div>
+          <div class="result-chip loss" onclick="selectResult('loss')">LOSS</div>
+          <div class="result-chip be" onclick="selectResult('be')">B/E</div>
+          <div class="result-chip skip" onclick="selectResult('skip')">SKIP</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">P&L ($)</label>
+          <input type="number" class="field-input" id="f-pnl" placeholder="e.g. 450 or -200" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">P&L (%)</label>
+          <input type="number" class="field-input" id="f-pnl-pct" placeholder="e.g. 1.2 or -0.4" step="0.01" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Trades Taken</label>
+          <input type="number" class="field-input" id="f-trades" placeholder="1 or 2" min="0" max="2" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">R:R</label>
+          <input type="text" class="field-input" id="f-rr" placeholder="e.g. 1:2.5" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Risk ($)</label>
+          <input type="number" class="field-input" id="f-risk" placeholder="e.g. 300" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Setup</label>
+          <input type="text" class="field-input" id="f-setup" placeholder="e.g. SMT + Sweep" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Notes</label>
+        <textarea class="field-input notes-ta" id="f-notes" placeholder="Observations, mistakes, what went well…"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-save" onclick="saveDay()">SAVE</button>
+        <button class="btn-clear" onclick="clearDay()">Clear</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div style="max-width:900px;margin:60px auto 0;text-align:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;">
+  D2R Blueprint · Dreams 2 Reality · Stay Disciplined
+</div>
+
+<script>
+/* ══════════════════════════════
+   TAB SWITCHING
+══════════════════════════════ */
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  const tabs = ['checklist','calendar'];
+  document.querySelectorAll('.nav-tab')[tabs.indexOf(name)].classList.add('active');
+  if (name === 'calendar') renderCalendar();
+}
+
+/* ══════════════════════════════
+   CHECKLIST
+══════════════════════════════ */
+function toggleStep(n) {
+  const body = document.getElementById('sb-' + n);
+  const toggle = document.getElementById('st-' + n);
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  toggle.classList.toggle('open', !open);
+}
+
+function toggleSub(el, stepNum) {
+  el.classList.toggle('checked');
+  recheckStep(stepNum);
+  updateBias();
+}
+
+function recheckStep(n) {
+  const step = document.getElementById('step-' + n);
+  const sc = document.getElementById('sc-' + n);
+  const isNeutral = step.classList.contains('step-neutral');
+
+  const allSubItems     = step.querySelectorAll('.sub-item, .bb-item');
+  const biasSubItems    = step.querySelectorAll('.sub-item[data-bias], .bb-item[data-bias]');
+  const unscoredItems   = step.querySelectorAll('.sub-item:not([data-bias])');
+  const biasChecked     = step.querySelectorAll('.sub-item[data-bias].checked, .bb-item[data-bias].checked');
+  const unscoredChecked = step.querySelectorAll('.sub-item:not([data-bias]).checked');
+  const allChecked      = step.querySelectorAll('.sub-item.checked, .bb-item.checked');
+
+  // Find unique radio groups (radio-item and bb-radio) and check each has a selection
+  const radioGroups = {};
+  step.querySelectorAll('.radio-item[onclick]').forEach(r => {
+    const m = r.getAttribute('onclick').match(/'([^']+)'/);
+    if (m) {
+      const g = m[1];
+      if (!radioGroups[g]) radioGroups[g] = { total: 0, selected: 0 };
+      radioGroups[g].total++;
+      if (r.classList.contains('selected')) radioGroups[g].selected++;
+    }
+  });
+  const allGroupsSatisfied = Object.values(radioGroups).every(g => g.selected > 0);
+
+  let done;
+  if (isNeutral) {
+    done = allChecked.length === allSubItems.length && allSubItems.length > 0;
+  } else if (biasSubItems.length === 0) {
+    // Step 3: radio selection required + all unscored checked
+    done = allGroupsSatisfied && unscoredChecked.length === unscoredItems.length;
+  } else {
+    // Steps 1, 4, 5, 6: at least 1 bias sub-item checked + all unscored checked
+    done = biasChecked.length >= 1 && unscoredChecked.length === unscoredItems.length;
+  }
+
+  // Compute bias points
+  let bullPts = 0, bearPts = 0;
+  if (!isNeutral) {
+    step.querySelectorAll('.sub-item.checked[data-bias], .bb-item.checked[data-bias]').forEach(el => {
+      const b = el.dataset.bias, w = parseInt(el.dataset.weight) || 0;
+      if (b === 'bull') bullPts += w;
+      else if (b === 'bear') bearPts += w;
+    });
+    step.querySelectorAll('.radio-item.selected[data-bias]').forEach(el => {
+      const b = el.dataset.bias, w = parseInt(el.dataset.weight) || 0;
+      if (b === 'bull') bullPts += w;
+      else if (b === 'bear') bearPts += w;
+    });
+  }
+
+  const isBear = bearPts > bullPts;
+  if (isBear) step.classList.add('step-bear');
+  else step.classList.remove('step-bear');
+
+  if (done) {
+    sc.classList.add('done');
+    step.classList.add('all-done');
+    if (isNeutral) {
+      step.style.borderColor = 'rgba(200,205,215,0.3)';
+      step.style.background  = 'rgba(200,205,215,0.02)';
+      sc.style.borderColor   = '#c8cdd7';
+      sc.style.background    = '#c8cdd7';
+    } else {
+      const col = isBear ? 'rgba(240,112,112,0.32)' : 'rgba(126,232,162,0.32)';
+      const bg  = isBear ? 'rgba(240,112,112,0.025)' : 'rgba(126,232,162,0.025)';
+      const cc  = isBear ? 'var(--red)' : 'var(--accent)';
+      step.style.borderColor = col;
+      step.style.background  = bg;
+      sc.style.borderColor   = cc;
+      sc.style.background    = cc;
+    }
+  } else {
+    sc.classList.remove('done');
+    step.classList.remove('all-done');
+    step.style.borderColor = '';
+    step.style.background  = '';
+    sc.style.borderColor   = '';
+    sc.style.background    = '';
+  }
+
+  updateProgress();
+  updateBias();
+}
+
+function updateProgress() {
+  let done = 0;
+  for (let i = 1; i <= 6; i++) {
+    if (document.getElementById('sc-' + i).classList.contains('done')) done++;
+  }
+  document.getElementById('pb-count').textContent = done + ' / 6 Steps';
+  document.getElementById('pb-fill').style.width = ((done / 6) * 100) + '%';
+}
+
+function updateBias() {
+  let bullPts = 0, bearPts = 0;
+
+  // Collect from checked sub-items
+  document.querySelectorAll('.sub-item.checked[data-bias], .bb-item.checked[data-bias]').forEach(el => {
+    const bias = el.dataset.bias;
+    const w = parseInt(el.dataset.weight) || 0;
+    if (bias === 'bull') bullPts += w;
+    else if (bias === 'bear') bearPts += w;
+  });
+
+  // Collect from selected radio-items
+  document.querySelectorAll('.radio-item.selected[data-bias]').forEach(el => {
+    const bias = el.dataset.bias;
+    const w = parseInt(el.dataset.weight) || 0;
+    if (bias === 'bull') bullPts += w;
+    else if (bias === 'bear') bearPts += w;
+  });
+
+  const total = bullPts + bearPts;
+  const bullPct = total > 0 ? Math.round((bullPts / total) * 100) : 0;
+  const bearPct = total > 0 ? Math.round((bearPts / total) * 100) : 0;
+
+  document.getElementById('bias-bull-pct').textContent = bullPct + '%';
+  document.getElementById('bias-bear-pct').textContent = bearPct + '%';
+
+  // Bar: each side fills from center, max 50% of track width
+  document.getElementById('bias-bar-bull').style.width = (bullPct / 2) + '%';
+  document.getElementById('bias-bar-bear').style.width = (bearPct / 2) + '%';
+
+  const verdict = document.getElementById('bias-verdict');
+  if (total === 0) {
+    verdict.textContent = 'NEUTRAL';
+    verdict.className = 'bias-verdict neutral';
+  } else if (bullPct > bearPct + 15) {
+    verdict.textContent = 'BULLISH';
+    verdict.className = 'bias-verdict bull';
+  } else if (bearPct > bullPct + 15) {
+    verdict.textContent = 'BEARISH';
+    verdict.className = 'bias-verdict bear';
+  } else if (bullPct > bearPct) {
+    verdict.textContent = 'LEAN BULL';
+    verdict.className = 'bias-verdict bull';
+  } else if (bearPct > bullPct) {
+    verdict.textContent = 'LEAN BEAR';
+    verdict.className = 'bias-verdict bear';
+  } else {
+    verdict.textContent = 'MIXED';
+    verdict.className = 'bias-verdict neutral';
+  }
+}
+
+function resetChecklist() {
+  document.querySelectorAll('.sub-item, .bb-item').forEach(el => el.classList.remove('checked'));
+  document.querySelectorAll('.radio-item').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.chip').forEach(el => { el.classList.remove('selected','selected-bear'); el.style.borderColor=''; el.style.color=''; el.style.background=''; });
+  document.querySelectorAll('.step-check').forEach(el => { el.classList.remove('done'); el.style.borderColor=''; el.style.background=''; });
+  document.querySelectorAll('.check-step').forEach(el => { el.classList.remove('all-done','step-bear'); el.style.borderColor=''; el.style.background=''; });
+  document.getElementById('news-time-row').classList.remove('visible');
+  document.getElementById('news-custom-time').style.display = 'none';
+  document.getElementById('news-10am-block').style.display = 'none';
+  document.getElementById('news-830-block').style.display = 'none';
+  document.querySelectorAll('.tf-select').forEach(s => s.value = '');
+  // Reset all confirm chips
+  ['fvg-yes-buy','fvg-yes-sell','fvg-no','s4-yes-buy','s4-yes-sell','s4-no','s5-yes-buy','s5-yes-sell','s5-no'].forEach(id => {
+    const c = document.getElementById(id);
+    if (c) { c.classList.remove('selected'); c.style.borderColor=''; c.style.color=''; c.style.background=''; }
+  });
+  updateProgress();
+  updateBias();
+}
+
+function selectRadio(el, group) {
+  // Deselect all radios in the same named group within this step
+  const stepEl = el.closest('.check-step');
+  if (stepEl) {
+    stepEl.querySelectorAll(`.radio-item[onclick*="'${group}'"], .bb-radio[onclick*="'${group}'"]`).forEach(r => r.classList.remove('selected'));
+  } else {
+    // fallback: deselect within sub-group or bb-col parent
+    const parent = el.closest('.sub-group') || el.closest('.bb-layout') || el.parentElement;
+    parent.querySelectorAll('.radio-item').forEach(r => r.classList.remove('selected'));
+  }
+  el.classList.add('selected');
+  // Trigger step check
+  const step = el.closest('.check-step');
+  if (step) {
+    const n = step.id.split('-')[1];
+    recheckStep(parseInt(n));
+  }
+  updateBias();
+}
+
+function toggleNewsChip(el, val) {
+  el.closest('.chip-group').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const row = document.getElementById('news-time-row');
+  row.classList.toggle('visible', val === 'yes');
+}
+
+function selectTimeChip(el, val) {
+  el.closest('.chip-group').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const customInput = document.getElementById('news-custom-time');
+  const block10 = document.getElementById('news-10am-block');
+  const block830 = document.getElementById('news-830-block');
+  customInput.style.display = val === 'other' ? 'block' : 'none';
+  block10.style.display = val === '10:00' ? 'block' : 'none';
+  block830.style.display = val === '8:30' ? 'block' : 'none';
+  // clear 8:30 radio selections when switching away
+  if (val !== '8:30') {
+    document.querySelectorAll('#news-830-block .radio-item').forEach(r => r.classList.remove('selected'));
+  }
+  updateBias();
+}
+
+function toggleChipInline(el) {
+  el.classList.toggle('selected');
+}
+
+function toggleFVG(el, val) {
+  const chips = ['fvg-yes-buy','fvg-yes-sell','fvg-no'];
+  const isSelected = el.classList.contains('selected');
+  chips.forEach(id => {
+    const c = document.getElementById(id);
+    if (c) { c.classList.remove('selected'); c.style.borderColor=''; c.style.color=''; c.style.background=''; }
+  });
+  if (!isSelected) {
+    el.classList.add('selected');
+    if (val === 'yes-buy') { el.style.borderColor='var(--accent)'; el.style.color='var(--accent)'; el.style.background='rgba(126,232,162,0.08)'; }
+    else if (val === 'yes-sell') { el.style.borderColor='var(--red)'; el.style.color='var(--red)'; el.style.background='rgba(240,112,112,0.08)'; }
+    else { el.style.borderColor='var(--gold)'; el.style.color='var(--gold)'; el.style.background='rgba(240,192,96,0.08)'; }
+  }
+}
+
+function toggleConfirm4(el, val) {
+  const chips = ['s4-yes-buy','s4-yes-sell','s4-no'];
+  const isSelected = el.classList.contains('selected');
+  chips.forEach(id => {
+    const c = document.getElementById(id);
+    if (c) { c.classList.remove('selected'); c.style.borderColor=''; c.style.color=''; c.style.background=''; }
+  });
+  if (!isSelected) {
+    el.classList.add('selected');
+    if (val === 'yes-buy') { el.style.borderColor='var(--accent)'; el.style.color='var(--accent)'; el.style.background='rgba(126,232,162,0.08)'; }
+    else if (val === 'yes-sell') { el.style.borderColor='var(--red)'; el.style.color='var(--red)'; el.style.background='rgba(240,112,112,0.08)'; }
+    else { el.style.borderColor='var(--gold)'; el.style.color='var(--gold)'; el.style.background='rgba(240,192,96,0.08)'; }
+  }
+}
+
+function toggleConfirm5(el, val) {
+  const chips = ['s5-yes-buy','s5-yes-sell','s5-no'];
+  const isSelected = el.classList.contains('selected');
+  chips.forEach(id => {
+    const c = document.getElementById(id);
+    if (c) { c.classList.remove('selected'); c.style.borderColor=''; c.style.color=''; c.style.background=''; }
+  });
+  if (!isSelected) {
+    el.classList.add('selected');
+    if (val === 'yes-buy') { el.style.borderColor='var(--accent)'; el.style.color='var(--accent)'; el.style.background='rgba(126,232,162,0.08)'; }
+    else if (val === 'yes-sell') { el.style.borderColor='var(--red)'; el.style.color='var(--red)'; el.style.background='rgba(240,112,112,0.08)'; }
+    else { el.style.borderColor='var(--gold)'; el.style.color='var(--gold)'; el.style.background='rgba(240,192,96,0.08)'; }
+  }
+}
+
+// Open step 1 on load
+toggleStep(1);
+
+/* ══════════════════════════════
+   CALENDAR / JOURNAL
+══════════════════════════════ */
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+let currentYear = new Date().getFullYear();
+let activeDay = null; // 'YYYY-MM-DD'
+let tradeData = {}; // stored as JSON in localStorage
+
+function storageKey(dateStr) { return 'tpt_day_' + dateStr; }
+
+function loadDay(dateStr) {
+  try {
+    const raw = localStorage.getItem(storageKey(dateStr));
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function saveData(dateStr, data) {
+  try { localStorage.setItem(storageKey(dateStr), JSON.stringify(data)); } catch(e) {}
+}
+
+function deleteData(dateStr) {
+  try { localStorage.removeItem(storageKey(dateStr)); } catch(e) {}
+}
+
+function getAllForYear(year) {
+  const results = [];
+  for (let m = 0; m < 12; m++) {
+    const daysInMonth = new Date(year, m + 1, 0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const key = `${year}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const data = loadDay(key);
+      if (data) results.push({ key, data });
+    }
+  }
+  return results;
+}
+
+function setYear(y) {
+  currentYear = parseInt(y);
+  document.getElementById('cal-year-label').textContent = currentYear;
+  document.getElementById('cal-year-sel').value = currentYear;
+  renderCalendar();
+}
+
+function changeYear(delta) {
+  setYear(currentYear + delta);
+}
+
+function initYearSelect() {
+  const sel = document.getElementById('cal-year-sel');
+  sel.innerHTML = '';
+  const nowY = new Date().getFullYear();
+  for (let y = nowY - 2; y <= nowY + 3; y++) {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    if (y === currentYear) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+function renderCalendar() {
+  initYearSelect();
+  document.getElementById('cal-year-label').textContent = currentYear;
+  const grid = document.getElementById('months-grid');
+  grid.innerHTML = '';
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+  let totalDays = 0, wins = 0, losses = 0, netPnl = 0;
+
+  for (let m = 0; m < 12; m++) {
+    const block = document.createElement('div');
+    block.className = 'month-block';
+
+    const firstDay = new Date(currentYear, m, 1).getDay();
+    const daysInMonth = new Date(currentYear, m + 1, 0).getDate();
+
+    // compute month P&L
+    let monthPnl = 0;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const key = `${currentYear}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const data = loadDay(key);
+      if (data) {
+        if (data.result === 'win') wins++;
+        if (data.result === 'loss') losses++;
+        if (data.result && data.result !== 'skip') totalDays++;
+        if (data.pnl) { netPnl += parseFloat(data.pnl)||0; monthPnl += parseFloat(data.pnl)||0; }
+      }
+    }
+
+    const pnlClass = monthPnl > 0 ? 'pos' : monthPnl < 0 ? 'neg' : 'zero';
+    const pnlText = monthPnl === 0 ? '—' : (monthPnl > 0 ? '+$' : '-$') + Math.abs(monthPnl).toLocaleString();
+
+    block.innerHTML = `
+      <div class="month-name">
+        <span>${MONTHS[m]}</span>
+        <span class="month-pnl ${pnlClass}">${pnlText}</span>
+      </div>
+      <div class="day-headers">${DAYS.map(d=>`<div class="day-hdr">${d}</div>`).join('')}</div>
+      <div class="days-grid" id="dgrid-${m}"></div>
+    `;
+    grid.appendChild(block);
+
+    const dgrid = block.querySelector(`#dgrid-${m}`);
+    // Empty cells
+    for (let i = 0; i < firstDay; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'day-cell empty';
+      dgrid.appendChild(empty);
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${currentYear}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const data = loadDay(dateStr);
+      const dow = new Date(currentYear, m, d).getDay();
+      const isWeekend = dow === 0 || dow === 6;
+
+      const cell = document.createElement('div');
+      cell.className = 'day-cell' + (isWeekend ? ' weekend' : '');
+      if (dateStr === todayStr) cell.classList.add('today-marker');
+      if (data) {
+        cell.classList.add('has-data');
+        if (data.result === 'win') cell.classList.add('win');
+        else if (data.result === 'loss') cell.classList.add('loss');
+        else if (data.result === 'be') cell.classList.add('be');
+      }
+      cell.innerHTML = `<div class="day-num">${d}</div>${data ? '<div class="day-dot"></div>' : ''}`;
+      cell.onclick = () => openModal(dateStr, m);
+      dgrid.appendChild(cell);
+    }
+  }
+
+  // Update summary
+  document.getElementById('s-days').textContent = totalDays;
+  document.getElementById('s-wins').textContent = wins;
+  document.getElementById('s-losses').textContent = losses;
+  const pnlEl = document.getElementById('s-pnl');
+  pnlEl.textContent = (netPnl >= 0 ? '+$' : '-$') + Math.abs(netPnl).toLocaleString();
+  pnlEl.className = 'cal-stat-val ' + (netPnl > 0 ? 'pos' : netPnl < 0 ? 'neg' : 'neutral');
+  const wr = totalDays > 0 ? Math.round((wins / totalDays) * 100) : 0;
+  const wrEl = document.getElementById('s-wr');
+  wrEl.textContent = wr + '%';
+  wrEl.className = 'cal-stat-val ' + (wr >= 50 ? 'pos' : 'neg');
+}
+
+function openModal(dateStr, monthIdx) {
+  activeDay = dateStr;
+  const [year, month, day] = dateStr.split('-');
+  const dateObj = new Date(parseInt(year), parseInt(month)-1, parseInt(day));
+  const label = dateObj.toLocaleDateString('en-US', { weekday:'short', month:'long', day:'numeric', year:'numeric' });
+  document.getElementById('modal-date-label').textContent = label;
+
+  // Reset modal
+  document.querySelectorAll('.result-chip').forEach(c => c.classList.remove('selected'));
+  ['f-pnl','f-pnl-pct','f-trades','f-rr','f-risk','f-setup','f-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+
+  const data = loadDay(dateStr);
+  if (data) {
+    if (data.result) {
+      const chip = document.querySelector(`.result-chip.${data.result}`);
+      if (chip) chip.classList.add('selected');
+    }
+    if (data.pnl !== undefined) document.getElementById('f-pnl').value = data.pnl;
+    if (data.pnlPct !== undefined) document.getElementById('f-pnl-pct').value = data.pnlPct;
+    if (data.trades !== undefined) document.getElementById('f-trades').value = data.trades;
+    if (data.rr) document.getElementById('f-rr').value = data.rr;
+    if (data.risk !== undefined) document.getElementById('f-risk').value = data.risk;
+    if (data.setup) document.getElementById('f-setup').value = data.setup;
+    if (data.notes) document.getElementById('f-notes').value = data.notes;
+  }
+
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function selectResult(r) {
+  document.querySelectorAll('.result-chip').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`.result-chip.${r}`).classList.add('selected');
+}
+
+function saveDay() {
+  if (!activeDay) return;
+  const selectedChip = document.querySelector('.result-chip.selected');
+  const data = {
+    result: selectedChip ? selectedChip.classList[1] : null,
+    pnl: document.getElementById('f-pnl').value,
+    pnlPct: document.getElementById('f-pnl-pct').value,
+    trades: document.getElementById('f-trades').value,
+    rr: document.getElementById('f-rr').value,
+    risk: document.getElementById('f-risk').value,
+    setup: document.getElementById('f-setup').value,
+    notes: document.getElementById('f-notes').value,
+  };
+  saveData(activeDay, data);
+  closeModal();
+  renderCalendar();
+}
+
+function clearDay() {
+  if (!activeDay) return;
+  if (confirm('Clear all data for this day?')) {
+    deleteData(activeDay);
+    closeModal();
+    renderCalendar();
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  activeDay = null;
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// Init
+initYearSelect();
+</script>
+</body>
+</html>
